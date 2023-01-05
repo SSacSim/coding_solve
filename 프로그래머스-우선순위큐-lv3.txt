@@ -34,4 +34,4 @@ def solution(operations):
       answer = [max(num_list),min(num_list)]
     return answer
 
-
+# 수정
