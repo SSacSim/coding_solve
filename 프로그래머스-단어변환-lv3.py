@@ -40,3 +40,5 @@ while True:
   if len(my_que) == 0:
     print(0)
     break
+
+print("종료")
