@@ -1,9 +1,8 @@
-tickets = 	 [['ICN','A'],['A','B'],['A','C'],['B','A'],['C','A']]
+tickets = 	[["ICN", "A"], ["A", "B"], ["A", "C"], ["C", "A"], ["B", "D"]]
+# dfs로 풀어야함.
 
 tickets_len = len(tickets)
-# 방문 map (array로 변경)
 
-from collections import deque
 from copy import deepcopy
 
 visit_map = dict()
@@ -14,50 +13,56 @@ for i in tickets:
     else:
         visit_map[start].append([end,1])
 
+for i in visit_map:
+    visit_map[i].sort()
 print(visit_map)
 
-my_que = deque([["ICN",["ICN"], visit_map]]) #반드시 ICN에서 출발 // #지금 출발 공항 / 지금까지 거쳐온 공항 / 남은 티켓
- 
+# dfs로 풀이
 
-answer = []
-while True:
-    print(my_que)
-    if len(my_que) == 0:
-        break
+start_node = "ICN"
+visit_node=["ICN"]
+my_answer = 0
+def dfs(start_node,visit_node_1,visit_map_1,flag):
+    print("dfs")
+    print("start node",start_node)
+    print("visit_node",visit_node_1)
+    print(flag)
+    if flag == 1:
+        print("falg 실행")
+        return 1
+    if len(visit_node_1) == tickets_len + 1:
+        print("저장!!!!!!!!!")
+        global my_answer
+        my_answer = visit_node_1
+        print(visit_node_1)
+        # flag return
+        return 1
     
-    '''
-    str , list ["INC","IAW"...], list ['ICN': [['JFK', 1]] ]
-    '''
-    now_port , history_port, leave_ticket = my_que.popleft()
-    
-    if len(history_port) == tickets_len + 1:
-        if history_port not in answer:
-            answer.append(history_port)
-        
-    print("now_port " , now_port )
-    print("history_port", history_port)
-    print("leave_ticket" , leave_ticket)
-    if now_port in leave_ticket: # 갈수 있는 곳이 있을때 
-        for index, i in enumerate(leave_ticket[now_port]): # 현 포트에서 갈 수 있는 곳 
-                print(i)
-                print("***********************")
-                if i[1] == 0: # 갈수 있는 곳은 있지만 티켓이 남아있지 않을때 
-                    continue
+    if (flag == 0) and (start_node in visit_map_1):
+        for index, i in enumerate(visit_map_1[start_node]):
+            '''
+            i = [next node, 남은 수] 
+            '''
+            print("i", i )
+            next_node , leave_count= i
+            if leave_count == 1 :
+                tmep_visit_map = deepcopy(visit_map_1)
                 
-                print( leave_ticket[now_port])
-                print( leave_ticket[now_port][index])
-                print( leave_ticket[now_port][index][1])
-                print("*******222**********")
-                temp_leave = deepcopy(leave_ticket)
-                temp_leave[now_port][index][1] = 0 #방문했으니 0으로 처기화
+                temp_visit_node = deepcopy(visit_node_1)
+                temp_visit_node.append(next_node)
                 
-                print(temp_leave)
-                print("*******33333**********")
-                my_que.append([i[0],history_port + [i[0]] , temp_leave])
+                tmep_visit_map[start_node][index][1] = 0
+                print('visit_map' ,visit_map_1)
+                print("next_node, visit_node",next_node,temp_visit_node)
+                print("=====================")
+                flag = dfs(next_node,temp_visit_node,tmep_visit_map , flag)
+                if flag == 1:
+                    break
+                print("======dfs 탈출=========")
+    if flag == 1:
+        return 1
+    else:
+        return 0
+dfs(start_node, visit_node,visit_map ,0)
 
-    print("after que ", my_que)
-    print("==================================")
-
-print(answer)
-answer.sort()
-print(answer[0])
+print(my_answer)
