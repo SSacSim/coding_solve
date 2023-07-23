@@ -1,3 +1,5 @@
+# dp.. memozation 접근이 잘못됨. 
+
 # 파일 합치기 
 T = int(input())
 K = int(input())
