@@ -29,3 +29,30 @@ for now_index in range(len(num_list)):
     matrix = temp_matrix.copy()
 
 print(matrix[M])
+
+
+# default dict로도 시간/ 메모리 초과?
+from collections import defaultdict
+import sys
+input =sys.stdin.readline
+N , M = map(int,input().strip().split(" "))
+N_list = list(map(int,input().strip().split(" ")))
+C_list = list(map(int,input().strip().split(" ")))
+
+memo = defaultdict(lambda : -1)
+for n_num , c_num in zip(N_list , C_list):
+  temp = list(memo.keys())
+
+  if (memo[n_num] == -1) or (memo[n_num] > c_num):
+    memo[n_num] = c_num
+
+  for key in temp:
+    if memo[key + n_num] == -1 :
+      memo[key + n_num] = memo[key] + c_num
+    elif (memo[key + n_num] > memo[n_num] + c_num):
+      memo[key + n_num] = memo[n_num] + c_num
+
+for i in range(M,max(memo.keys()) + 1 ):
+  if memo[i] != -1:
+    print(memo[i])
+    break
